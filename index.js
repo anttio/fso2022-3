@@ -4,7 +4,18 @@ const morgan = require('morgan');
 const app = express();
 
 app.use(express.json());
-app.use(morgan('tiny'));
+
+// Configure morgan to show POST data
+morgan.token('postdata', (req, res) => {
+  if (req.method === 'POST') {
+    return JSON.stringify(req.body);
+  }
+});
+app.use(
+  morgan(
+    ':method :url :status :res[content-length] - :response-time ms :postdata'
+  )
+);
 
 let persons = [
   {

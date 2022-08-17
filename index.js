@@ -48,21 +48,18 @@ app.get('/api/persons/:id', (req, res) => {
 });
 
 app.post('/api/persons/', (req, res) => {
-  const person = req.body;
+  const body = req.body;
 
-  // If name or number is missing return 400
-  if (!person.name || !person.number) {
+  if (!body.name || !body.number) {
     return res.status(400).json({ error: 'the name or number is missing' });
   }
 
-  // If name already exists return 400
-  if (persons.find((p) => p.name === person.name)) {
-    return res.status(400).json({ error: 'name must be unique' });
-  }
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
 
-  person.id = Math.floor(Math.random() * 10000);
-  persons = persons.concat(person);
-  res.json(person);
+  person.save().then((savedPerson) => res.json(savedPerson));
 });
 
 app.delete('/api/persons/:id', (req, res) => {

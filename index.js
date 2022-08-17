@@ -23,7 +23,6 @@ app.use(
 );
 
 const Person = require('./models/person');
-const { response } = require('express');
 
 app.get('/info', (req, res) => {
   res.send(
@@ -60,10 +59,24 @@ app.post('/api/persons/', (req, res) => {
     name: body.name,
     number: body.number,
   });
+
   person.save().then((savedPerson) => res.json(savedPerson));
 });
 
-app.delete('/api/persons/:id', (req, res) => {
+app.put('/api/persons/:id', (req, res, next) => {
+  const body = req.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(req.params.id, person)
+    .then((updatedPerson) => res.json(updatedPerson))
+    .catch((error) => next(error));
+});
+
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
     .then(() => res.status(204).end())
     .catch((error) => next(error));

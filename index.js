@@ -11,7 +11,7 @@ app.use(express.static('build'));
 app.use(express.json());
 
 // Configure morgan to show POST data
-morgan.token('postdata', (req, res) => {
+morgan.token('postdata', (req) => {
   if (req.method === 'POST') {
     return JSON.stringify(req.body);
   }
